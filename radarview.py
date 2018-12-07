@@ -6,6 +6,8 @@ class RadarView(Frame):
 
     def __init__(self, parent, q, controller):
         super(RadarView, self).__init__(parent)
+        parent.protocol("WM_DELETE_WINDOW", self.exitAction)
+        self.parent = parent
         self.q = q
         self.controller = controller
         self.screen_width = 480
@@ -14,6 +16,10 @@ class RadarView(Frame):
         self.canvas.pack()
         self.drawBackground(self.screen_width)
         self.read_queue()
+
+    def exitAction(self):
+        self.controller.stop()
+        self.parent.destroy()
 
     def drawBackground(self, screen_width):
         width = 30
@@ -30,10 +36,11 @@ class RadarView(Frame):
 
     def read_queue(self):
         try:
-            self.process(self.q.get(False)) # non-blocking
+            self.process(self.q.get(False))
         except queue.Empty:
             print("keine Daten")
-        self.after(1, self.read_queue)
+        self.after(1000, self.read_queue)
            
     def process(slef,item):
-        print(item)
+        for x in item:
+            print("Distance" + str(x.distance) + " m Bearing" + str(x.bearing) + " degree")

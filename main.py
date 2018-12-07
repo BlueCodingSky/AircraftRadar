@@ -10,6 +10,7 @@ def main():
     controller = AircraftRadarController(root)
     controller.showAircraftRadar()
     root.mainloop()
+    print("Exit mainloop")
     
 if __name__ == "__main__":
     main()
