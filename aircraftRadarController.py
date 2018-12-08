@@ -1,6 +1,5 @@
 import json
 import queue
-from aircraftParser import *
 from tkinter import *
 from radarview import RadarView
 from threading import Thread
@@ -11,10 +10,10 @@ from radarViewModels import *
 
 class AircraftRadarController(object):
 
-    def __init__(self, window):
+    def __init__(self, aircraftProvider,window):
         self.window = window
         self.q = queue.Queue()
-        self.parser = AircraftParser()
+        self.provider = aircraftProvider
         self.workerThread = Thread(target=self.provideAircraftData)
         self.cancel = False
         self.positionCalculator = RelativPositionCalculator(47.5, 9.2417)
@@ -23,17 +22,12 @@ class AircraftRadarController(object):
         RadarView(self.window, self.q, controller=self)
         self.workerThread.start()
 
-    def readAircraftJson(self):
-        with open('/Users/Kuppi/Desktop/Raspi/aircraft.json', 'r') as aircraftFile:
-            return json.load(aircraftFile)
-
     def stop(self):
         self.cancel = True
 
     def provideAircraftData(self):
         while self.cancel == False:
-            data = self.readAircraftJson()
-            aircrafts = self.parser.parseAircraftsFromJson(data)
+            aircrafts = self.provider.getAircrafts()
             viewModels = list(map(lambda x: self.aircraftToViewModel(x), aircrafts))
             self.q.put(viewModels)
             sleep(2)

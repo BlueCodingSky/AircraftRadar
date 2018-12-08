@@ -1,13 +1,14 @@
 import json
 import queue
-from aircraftParser import *
 from tkinter import *
 from radarview import RadarView
 from aircraftRadarController import *
+from aircraftDataProviders import FileDataProvider
 
 def main():
     root = Tk()
-    controller = AircraftRadarController(root)
+    aircraftProvider = FileDataProvider('/Users/Kuppi/Desktop/Raspi/aircraft.json')
+    controller = AircraftRadarController(aircraftProvider, root)
     controller.showAircraftRadar()
     root.mainloop()
     print("Exit mainloop")

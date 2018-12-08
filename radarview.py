@@ -41,6 +41,11 @@ class RadarView(Frame):
             print("keine Daten")
         self.after(1000, self.read_queue)
            
-    def process(slef,item):
+    def process(self,item):
+        self.circle(240, 240, 10)
         for x in item:
             print("Distance" + str(x.distance) + " m Bearing" + str(x.bearing) + " degree")
+
+    def circle(self, x, y, r):
+        id = self.canvas.create_oval(x-r, y-r, x+r, y+r)
+        return id
