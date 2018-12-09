@@ -1,6 +1,15 @@
 import json
 from models import Aircraft
 from abc import ABC, abstractmethod
+import urllib.request
+
+class AircraftProviderFactory(object):
+
+    def getAircraftProvider(self, providerType, aircraftSource):
+        if providerType == 'file':
+            return FileDataProvider(aircraftSource)
+
+        return WebServerDataProvider(aircraftSource)
 
 class DataProvider(ABC):
 
@@ -19,13 +28,22 @@ class DataProvider(ABC):
 class FileDataProvider(DataProvider):
 
     def __init__(self, fileName):
+        super(FileDataProvider, self).__init__()
         self.fileName = fileName
-        self.parser = AircraftParser()
 
     def readAircraftJson(self):
         with open(self.fileName, 'r') as aircraftFile:
             return json.load(aircraftFile)
 
+class WebServerDataProvider(DataProvider):
+
+    def __init__(self, url):
+        super(WebServerDataProvider, self).__init__()
+        self.url = url
+
+    def readAircraftJson(self):
+        with urllib.request.urlopen(self.url) as url:
+            return json.loads(url.read().decode('utf-8'))
 
 class AircraftParser(object):
 

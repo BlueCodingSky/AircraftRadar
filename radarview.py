@@ -1,6 +1,7 @@
 from tkinter import *
 import queue
 import threading
+import math
 
 class RadarView(Frame):
 
@@ -39,13 +40,21 @@ class RadarView(Frame):
             self.process(self.q.get(False))
         except queue.Empty:
             print("keine Daten")
-        self.after(1000, self.read_queue)
+        self.after(100, self.read_queue)
            
     def process(self,item):
-        self.circle(240, 240, 10)
+        #self.circle(240, 240, 5)
         for x in item:
-            print("Distance" + str(x.distance) + " m Bearing" + str(x.bearing) + " degree")
+            self.drawAircraft(x)
+
+    def drawAircraft(self, aircraft):
+        if aircraft.distance < 7000 :
+            print('distance: ' + str(aircraft.distance) + ' Bearing: ' + str(aircraft.bearing))
+            radius = aircraft.distance * 210 / 7000
+            x = radius * math.cos(aircraft.bearing) + 240
+            y = radius * math.sin(aircraft.bearing) + 240
+            self.circle(x, y, 5)
 
     def circle(self, x, y, r):
-        id = self.canvas.create_oval(x-r, y-r, x+r, y+r)
+        id = self.canvas.create_oval(x-r, y-r, x+r, y+r, fill='sea green')
         return id

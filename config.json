@@ -1,0 +1,6 @@
+{
+    "aircraftDataSource":{
+        "type" : "file",
+        "destination" : "/Users/Kuppi/Desktop/Raspi/aircraft.json"
+    }
+}
